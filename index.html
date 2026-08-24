@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Kado Spesial untuk Aisyah 💝</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 88C22 66 8 50 8 31 8 16 20 8 32 10c9 1 15 6 18 12 3-6 9-11 18-12 12-2 24 6 24 21 0 19-14 35-42 57z' fill='%23FF9EC4'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="aiv.css">
+</head>
+<body>
+
+<!-- ===== GATE LAYER 1 : PIN ===== -->
+<div id="layer1" class="gate">
+  <div class="gate-dots"><span class="gd"></span><span class="gd"></span><span class="gd"></span></div>
+  <div class="kitty-face small">
+    <img src="assets/icon-kitty.png" alt="" width="96" height="96"/>
+  </div>
+  <h2>Kado Spesial Buat Kamu 🎀</h2>
+  <p class="hint">Masukkan tanggal jadian kita (6 angka)</p>
+  <div class="pin-dots" id="pin-dots">
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="pin-pad" id="pin-pad">
+    <button onclick="lkPress('1')">1</button><button onclick="lkPress('2')">2</button><button onclick="lkPress('3')">3</button>
+    <button onclick="lkPress('4')">4</button><button onclick="lkPress('5')">5</button><button onclick="lkPress('6')">6</button>
+    <button onclick="lkPress('7')">7</button><button onclick="lkPress('8')">8</button><button onclick="lkPress('9')">9</button>
+    <button class="ghost" disabled></button><button onclick="lkPress('0')">0</button><button onclick="lkBack()">⌫</button>
+  </div>
+  <p class="gate-error" id="lock-error"></p>
+</div>
+
+<!-- ===== GATE LAYER 3 : TAHAN HATI ===== -->
+<div id="layer3" class="gate hidden">
+  <h2>Terakhir! 💗</h2>
+  <p class="hint">Tahan hati ini 3 detik ya...</p>
+  <div class="hold-wrap">
+    <svg class="hold-ring" viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="54"/>
+      <circle class="prog" id="hold-prog" cx="60" cy="60" r="54"/>
+    </svg>
+    <button id="hold-btn"><svg viewBox="0 0 24 24" width="42" height="42"><path d="M12 21C5.5 16.5 2.8 12.6 2.8 8.6 2.8 5.4 5.1 3.4 7.8 3.6c2 .1 3.6 1.2 4.2 2.8.6-1.6 2.2-2.7 4.2-2.8 2.7-.2 5 1.8 5 5 0 4-2.7 7.9-9.2 12.4z" fill="#FF7FAE"/></svg><span>Tahan</span></button>
+  </div>
+  <p class="hold-pct" id="hold-pct">0%</p>
+</div>
+
+<!-- ===== FLOATING HEARTS ===== -->
+<div id="hearts-bg"></div>
+
+<!-- ===== MUSIC ===== -->
+<audio id="bg-audio" preload="metadata" loop src="audio/kota-ini-tak-sama-tanpamu.mp3"></audio>
+<button id="music-toggle" title="Putar lagu">♪</button>
+
+<!-- ===== NAV MENU (tab bawah) ===== -->
+<nav id="page-nav">
+  <button data-page="hero" class="on"><img src="assets/icon-kitty.png" alt=""/><span>Awal</span></button>
+  <button data-page="letter"><img src="assets/icon-cinnamo.png" alt=""/><span>Surat</span></button>
+  <button data-page="gallery"><img src="assets/icon-blossom.png" alt=""/><span>Galeri</span></button>
+  <button data-page="stats"><img src="assets/icon-kitty.png" alt=""/><span>Angka</span></button>
+  <button data-page="closing"><img src="assets/icon-cinnamo.png" alt=""/><span>Penutup</span></button>
+</nav>
+
+<!-- ===== PAGE: HERO + COUNTDOWN ===== -->
+<div id="page-hero" class="page">
+<section id="hero">
+  <div class="kitty-hero">
+    <img src="assets/kitty.png" alt="Hello Kitty 🎀" width="220" height="220"/>
+  </div>
+  <h1>Happy Anniversary,<br/><span class="name">Aisyah! 🎀</span></h1>
+  <p class="sub">Satu tahun penuh cerita &amp; kenangan indah bersama Ryan 💕</p>
+</section>
+
+<!-- ===== COUNTDOWN ===== -->
+<section id="countdown-section" class="pop-section">
+  <h2 class="sec-title">Menuju Hari Istimewa Kita 🗓️</h2>
+  <div class="cd-grid">
+    <div class="cd-box"><b id="cd-d">00</b><span>Hari</span></div>
+    <div class="cd-box"><b id="cd-h">00</b><span>Jam</span></div>
+    <div class="cd-box"><b id="cd-m">00</b><span>Menit</span></div>
+    <div class="cd-box"><b id="cd-s">00</b><span>Detik</span></div>
+  </div>
+  <p class="together">Kita sudah bersama selama <b id="days-together">0</b> hari 💞</p>
+</section>
+</div>
+
+<!-- ===== PAGE: SURAT ===== -->
+<div id="page-letter" class="page hidden">
+<section id="letter-section" class="pop-section">
+  <h2 class="sec-title">Surat Untukmu ✉️</h2>
+  <img src="assets/icon-cinnamo.png" alt="" width="90" height="90" style="margin:0 auto .6rem;display:block"/>
+  <div class="letter-card">
+    <div id="typed-text"></div><span id="cursor">|</span>
+  </div>
+</section>
+</div>
+
+<!-- ===== PAGE: GALERI ===== -->
+<div id="page-gallery" class="page hidden">
+<section id="timeline-section" class="pop-section">
+  <h2 class="sec-title">Perjalanan Kita 📸</h2>
+  <p class="gallery-sub">Ketuk polaroidnya untuk lihat lebih besar 💗</p>
+  <div class="polaroid-mess" id="polaroidMess"></div>
+  <button id="loadMoreBtn" onclick="loadMorePolaroids()">🎀 Tampilkan Lagi</button>
+</section>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <span id="lb-close">✕</span>
+  <button id="lb-prev" class="lb-nav">‹</button>
+  <div class="lb-frame">
+    <img id="lb-img" src="" alt=""/>
+  </div>
+  <button id="lb-next" class="lb-nav">›</button>
+</div>
+
+
+<!-- ===== PAGE: ANGKA ===== -->
+<div id="page-stats" class="page hidden">
+<section id="stats-section" class="pop-section">
+  <img src="assets/icon-kitty.png" alt="" width="68" height="68" style="margin:0 auto .4rem;display:block;animation:kittyBounce 2.5s ease-in-out infinite"/>
+  <h2 class="sec-title">Kita dalam Angka 🔢</h2>
+  <p class="stats-sub">Setiap detik yang terlewati punya ceritanya sendiri 🌸</p>
+
+  <div class="stat-grid">
+    <div class="stat-box"><span class="stat-icon">🗓️</span><b data-days>0</b><span>Hari Bersama</span></div>
+    <div class="stat-box"><span class="stat-icon">📸</span><b data-photos>0</b><span>Kenangan Tersimpan</span></div>
+    <div class="stat-box"><span class="stat-icon">🌙</span><b data-months>0</b><span>Bulan Cerita</span></div>
+    <div class="stat-box"><span class="stat-icon">⏰</span><b data-hours>0</b><span>Jam Bahagia</span></div>
+    <div class="stat-box"><span class="stat-icon">⏳</span><b data-seconds>0</b><span>Juta Detik Rindu</span></div>
+    <div class="stat-box stat-special"><span class="stat-icon">💖</span><b data-love>∞</b><span>Sayang Buat Aisyah</span></div>
+  </div>
+
+  <div class="love-meter-card">
+    <div class="love-meter-head">
+      <span>🎀 Level Cinta Tahun Pertama</span>
+      <b>100% Completed ✨</b>
+    </div>
+    <div class="love-bar-track">
+      <div class="love-bar-fill" id="love-bar"></div>
+    </div>
+    <p class="love-meter-sub">Siap lanjut ke level tahun-tahun berikutnya bersama kamu 💕</p>
+  </div>
+
+  <div class="stats-quote-card">
+    <p>“Dari 8 miliar manusia di bumi, aku paling bersyukur semesta mempertemukan Ryan &amp; Aisyah.”</p>
+  </div>
+</section>
+</div>
+
+<!-- ===== PAGE: KEJUTAN ===== -->
+<div id="page-closing" class="page hidden">
+<section id="closing" class="pop-section">
+  <img src="assets/cinnamoroll.png" alt="" width="130" height="130" style="margin:0 auto .4rem;filter:drop-shadow(0 6px 14px rgba(150,180,255,.4))"/>
+  <div class="bow-divider">
+    <svg viewBox="0 0 80 40" width="56" height="28">
+      <ellipse cx="24" cy="20" rx="18" ry="12" fill="#E8365D"/>
+      <ellipse cx="56" cy="20" rx="18" ry="12" fill="#E8365D"/>
+      <circle cx="40" cy="20" r="9" fill="#C21F47"/>
+    </svg>
+  </div>
+  <h2>Selamat Anniversary Pertama, Sayang 💝</h2>
+  <p>Makasih udah jadi bagian paling indah dari setahun ini.<br/>Aku sayang kamu, hari ini, besok, dan seterusnya.</p>
+
+  <!-- KADO KEJUTAN INTERAKTIF -->
+  <p class="gift-hint">Ketuk kadonya untuk buka kejutannya 🎁</p>
+  <button id="gift-box" onclick="openGift()" aria-label="Buka kejutan">
+    <svg viewBox="0 0 120 120" width="150" height="150">
+      <g id="gift-body">
+        <rect x="22" y="48" width="76" height="58" rx="8" fill="#FF9EC4"/>
+        <rect x="22" y="48" width="76" height="14" rx="6" fill="#FF7FAE"/>
+        <rect x="54" y="48" width="12" height="58" fill="#FFD6E8"/>
+        <path d="M60 48 C40 44 34 28 44 22 C52 17 60 26 60 40 C60 26 68 17 76 22 C86 28 80 44 60 48z" fill="#E8365D"/>
+      </g>
+      <g id="gift-lid">
+        <rect x="16" y="34" width="88" height="18" rx="7" fill="#FF7FAE"/>
+        <rect x="53" y="34" width="14" height="18" fill="#FFEFF5"/>
+        <path d="M60 36 C42 32 36 18 45 13 C53 9 60 18 60 30 C60 18 67 9 75 13 C84 18 78 32 60 36z" fill="#FF9EC4"/>
+      </g>
+    </svg>
+  </button>
+  <div id="surprise-reveal" class="reveal-box">
+    <p class="special-confession">“Meskipun Sifatku Cuek &amp; Kurang peka Aku Tetep Sayang Kamu Syah. Kamu Yang Terakhir”</p>
+    <p class="special-sub">Aku pilih kamu. Selalu. ♥</p>
+    <small>— Ryan</small>
+  </div>
+
+  <!-- 3 AMPLOP RAHASIA -->
+  <h3 class="envelope-title">Ada 3 pesan rahasia nih... 💌</h3>
+  <div class="envelope-grid">
+    <button class="envelope" onclick="toggleEnvelope(0)">
+      <span class="env-front">💌<b>Janji Ryan</b></span>
+      <span class="env-back">"Selalu ada di setiap capek &amp; senyummu."</span>
+    </button>
+    <button class="envelope" onclick="toggleEnvelope(1)">
+      <span class="env-front">🎀<b>Momen Favorit</b></span>
+      <span class="env-back">"Tawa lepasmu yang bikin semua masalah hilang."</span>
+    </button>
+    <button class="envelope" onclick="toggleEnvelope(2)">
+      <span class="env-front">✨<b>Harapan Kita</b></span>
+      <span class="env-back">"Lebih banyak tempat baru yang kita datangi bareng."</span>
+    </button>
+  </div>
+
+  <!-- SERTIFIKAT CINTA -->
+  <div class="love-certificate">
+    <div class="cert-inner">
+      <p class="cert-ornament">🌸 ❀ 🌸</p>
+      <p class="cert-title">Sertifikat Resmi</p>
+      <h3>Certified Best Girlfriend of the Year 🎀</h3>
+      <p class="cert-name">diberikan kepada</p>
+      <p class="cert-recipient">Aisyah 💖</p>
+      <p class="cert-desc">atas dedikasi luar biasa dalam membuat setiap hari terasa seperti rumah,<br/>selama satu tahun pertama kita — 7 September 2025.</p>
+      <p class="cert-sign">— Ryan ♥</p>
+    </div>
+  </div>
+
+  <!-- TOMBOL WHATSAPP -->
+  <a id="wa-btn" href="https://wa.me/?text=Halo%20Ryan%20%E2%99%A5%EF%B8%8F%20aku%20sudah%20buka%20kadonya...%20makasih%20ya%20sayang%2C%20aku%20juga%20sayang%20kamu!%20%F0%9F%92%95"
+     target="_blank" rel="noopener">Kirim Peluk Balik ke Ryan 💬</a>
+</section>
+</div>
+
+<script src="aiv-data.js"></script>
+<script src="aiv.js"></script>
+</body>
+</html>
