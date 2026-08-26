@@ -63,8 +63,8 @@ img { max-width: 100%; display: block; }
 .gate.hidden { display: none; }
 /* Blur lembut saat jeda setelah ledakan, sebelum transisi sakura */
 .gate.blur-out {
-  transition: filter .45s ease;
-  filter: blur(10px);
+  transition: filter .6s ease;
+  filter: blur(12px);
 }
 .gate h2 { color: var(--pink-deep); font-size: 1.5rem; }
 .gate .hint { font-size: .95rem; color: var(--pink-dark); }
