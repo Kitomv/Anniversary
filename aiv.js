@@ -97,11 +97,11 @@ const CONFIG = {
         btn.classList.add('done');
         btn.style.animation = '';
         btn.querySelector('span').textContent = 'Terbuka!';
-        /* Wave hilang -> layar blur lembut 600ms -> jeda tenang -> transisi sakura */
+        /* Wave hilang -> blur in 600ms -> tahan -> blur out 600ms -> jeda tenang -> sakura */
         const gate = document.getElementById('layer3');
         if(gate) gate.classList.add('blur-out');
         setTimeout(()=>{ if(gate) gate.classList.remove('blur-out'); }, 1100);
-        setTimeout(unlockAll, 1400);
+        setTimeout(unlockAll, 2100);
       }, 560);
     }
     function tick(){
