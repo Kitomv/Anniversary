@@ -369,9 +369,26 @@ Aku sayang kamu, hari ini dan seterusnya 💕
       else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
     }
     function showLB(i){
+      const isOpen = lb.classList.contains('show');
+      const prev = lbIndex;
       lbIndex = (i + all.length) % all.length;
       lbImg.src = all[lbIndex];
       lbPrevFocus = document.activeElement;
+      if(isOpen){
+        /* Navigasi di dalam lightbox: slide arah kiri/kanan */
+        const dir = (lbIndex > prev || (prev === all.length-1 && lbIndex === 0)) ? 'left' : 'right';
+        const frame = lb.querySelector('.lb-frame');
+        frame.style.animation = 'none';
+        void frame.offsetWidth;
+        lb.dataset.dir = dir;
+        frame.onanimationend = ()=>{ delete lb.dataset.dir; frame.onanimationend = null; };
+      } else {
+        /* Buka pertama kali: restart lbIn animation */
+        const frame = lb.querySelector('.lb-frame');
+        frame.style.animation = 'none';
+        void frame.offsetWidth;
+        frame.style.animation = '';
+      }
       lb.classList.add('show');
       document.addEventListener('keydown', lbKeyTrap);
       lbBtns[0].focus();
