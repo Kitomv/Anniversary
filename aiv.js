@@ -359,12 +359,14 @@ Aku sayang kamu, hari ini dan seterusnya 💕
     function closeLB(){
       lb.classList.remove('show');
       delete lb.dataset.dir;
+      clearTimeout(lbNavTimer);
       const frame = lb.querySelector('.lb-frame');
       if(frame){
         frame.onanimationend = null;
         frame.style.animation = '';
       }
       document.removeEventListener('keydown', lbKeyTrap);
+      document.body.style.overflow = '';
       if(lbPrevFocus) lbPrevFocus.focus();
     }
     function lbKeyTrap(e){
@@ -403,6 +405,7 @@ Aku sayang kamu, hari ini dan seterusnya 💕
         frame.style.animation = '';
       }
       lb.classList.add('show');
+      document.body.style.overflow = 'hidden';
       document.addEventListener('keydown', lbKeyTrap);
       lbBtns[0].focus();
     }
@@ -414,6 +417,11 @@ Aku sayang kamu, hari ini dan seterusnya 💕
       const idx = all.indexOf(src);
       showLB(idx >= 0 ? idx : 0);
     };
+
+    /* Cegah scroll body saat lightbox buka */
+    lb.addEventListener('touchmove', e=>{
+      if(lb.classList.contains('show')) e.preventDefault();
+    }, {passive:false});
 
     /* Swipe kiri/kanan & pan untuk pindah foto */
     let touchX = 0, touchY = 0, swiped = false;
