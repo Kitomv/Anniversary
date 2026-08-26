@@ -732,10 +732,15 @@ section { position: relative; z-index: 2; max-width: 680px; margin: 0 auto; padd
   .lb-frame { padding: 10px 10px 44px; }
 }
 
-/* ===== Proteksi ringan: cegah save via drag/long-press pada foto.
-   Seleksi teks TIDAK diblokir (mengganggu aksesibilitas). ===== */
-img {
+/* ===== Proteksi: blokir seleksi teks & callout gambar di mobile ===== */
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
   -webkit-touch-callout: none;
+}
+img {
+  pointer-events: none;
   -webkit-user-drag: none;
   user-drag: none;
 }

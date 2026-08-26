@@ -659,8 +659,21 @@ function synthStop(){
   }catch(err){ console.error('transition:', err); }
 })();
 
-/* ===== 13. PROTEKSI (dihapus dari JS — pindah ke CSS ringan) =====
-   Anti-drag/long-press foto kini via rule CSS `img` di aiv.css.
-   Pemblokiran klik kanan/copy/devtools dihapus: tidak efektif
-   (foto tetap bisa diambil via network tab/screenshot) dan
-   mengganggu pengguna sungguhan (screen reader, copy teks). */
+/* ===== 13. PROTEKSI MOBILE ===== */
+(function(){
+  try{
+    /* Long-press gambar -> cegah menu simpan (iOS Safari butuh preventDefault) */
+    document.addEventListener('contextmenu', e=>{
+      if(e.target && e.target.tagName === 'IMG') e.preventDefault();
+    });
+
+    /* Long-press teks/gambar di mobile: blokir seleksi & callout */
+    document.addEventListener('touchstart', function(e){
+      const t = e.target;
+      if(t && (t.tagName === 'IMG' || t.tagName === 'P' || t.tagName === 'B' || t.tagName === 'SPAN')){
+        t.style.webkitUserSelect = 'none';
+        t.style.userSelect = 'none';
+      }
+    }, {passive:true});
+  }catch(err){ console.error('proteksi:', err); }
+})();
