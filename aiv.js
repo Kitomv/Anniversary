@@ -164,6 +164,8 @@ const CONFIG = {
       if(mt) mt.classList.add('show');
       const pn = document.getElementById('page-nav');
       if(pn) pn.classList.add('show');
+      const fb = document.getElementById('fullscreen-toggle');
+      if(fb) fb.classList.add('show');
       /* Coba putar musik otomatis sekali — hanya jika user belum menyalakan
          sendiri dalam jendela 1200ms (hindari membalik pilihan user) */
       setTimeout(()=>{
