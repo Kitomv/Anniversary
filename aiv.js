@@ -98,13 +98,14 @@ const CONFIG = {
         btn.classList.add('done');
         btn.style.animation = '';
         btn.querySelector('span').textContent = 'Terbuka!';
+        /* Tunggu wave & partikel benar-benar hilang, baru transisi sakura */
+        setTimeout(unlockAll, 700);
       }, 560);
     }
 
     function done(){
       btn.classList.add('done');
       pct.textContent = '100% ♥';
-      unlockAll();
     }
     function tick(){
       const p = Math.min(1,(Date.now()-startT)/HOLD_MS);
