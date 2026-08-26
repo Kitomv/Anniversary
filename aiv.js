@@ -211,7 +211,7 @@ const CONFIG = {
 })();
 
 /* ===== 5. TYPING LETTER ===== */
-const LETTER = `Untuk ${CONFIG.nameDia},
+const LETTER = `Untuk ${CONFIG.nameDia}ku,
 
 7 September 2025 — tanggal kecil yang mengubah segalanya. Sejak hari itu setiap hariku penuh warna karena ada kamu.
 
