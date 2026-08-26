@@ -50,7 +50,7 @@ const CONFIG = {
 
 /* ===== 2. GATE: RIDDLE (dihapus — PIN langsung ke hold) ===== */
 
-/* ===== 3. GATE: HOLD HEART ===== */
+/* ===== 3. GATE: HOLD HEART (getar → meletup) ===== */
 (function(){
   try{
     const HOLD_MS = 3000;
@@ -58,31 +58,69 @@ const CONFIG = {
     const ring = document.getElementById('hold-prog');
     const pct  = document.getElementById('hold-pct');
     const btn  = document.getElementById('hold-btn');
-    let startT = 0, timer = null;
+    let startT = 0, timer = null, burst = null;
+
+    /* Getar makin cepat & besar mendekati 100% — via durasi animasi.
+       d dikuantisasi ke step 10ms agar restart animasi jarang (bukan tiap tick 40ms) */
+    function setQuiverSpeed(p){
+      const d = (Math.round((0.16 - p*0.09)*100)/100).toFixed(2);  /* .16s → .07s */
+      const s = (1.06 + p*0.14).toFixed(2);   /* scale 1.06 → 1.20 */
+      btn.style.setProperty('--qd', d+'s');
+      btn.style.setProperty('--qs', s);
+      if(btn.dataset.qd !== d){
+        btn.dataset.qd = d;
+        btn.style.animation = 'none';
+        void btn.offsetWidth;               /* restart animation */
+        btn.style.animation = `holdQuiver var(--qd) linear infinite`;
+      }
+    }
+
+    function explode(done){
+      /* Ring kejut */
+      burst = document.createElement('div');
+      burst.className = 'burst-ring go';
+      btn.parentElement.appendChild(burst);
+      setTimeout(()=>burst && burst.remove(), 600);
+
+      btn.classList.remove('pressing');
+      btn.classList.add('exploding');
+      btn.querySelector('span').textContent = '💗';
+      pct.textContent = '100% ♥';
+      setTimeout(()=>{
+        done();
+        btn.classList.remove('exploding');
+        btn.classList.add('done');
+        btn.style.animation = '';
+        btn.querySelector('span').textContent = 'Terbuka!';
+      }, 560);
+    }
 
     function done(){
-      btn.classList.remove('pressing');
       btn.classList.add('done');
-      btn.querySelector('span').textContent = 'Terbuka!';
       pct.textContent = '100% ♥';
-      setTimeout(unlockAll, 400);
+      unlockAll();
     }
     function tick(){
       const p = Math.min(1,(Date.now()-startT)/HOLD_MS);
       ring.style.strokeDashoffset = (CIRC*(1-p)) + 'px';
       pct.textContent = Math.round(p*100) + '%';
-      if(p >= 1){ done(); return; }
+      setQuiverSpeed(p);
+      if(p >= 1){ explode(done); return; }
       timer = setTimeout(tick, 40);
     }
     function start(e){
       if(e.cancelable) e.preventDefault();
+      if(btn.classList.contains('exploding')) return;
       if(timer) return;
       btn.classList.add('pressing');
       startT = Date.now(); tick();
     }
     function stop(){
+      if(btn.classList.contains('exploding')) return;
       btn.classList.remove('pressing');
-      if(!timer || btn.classList.contains('done')) { timer=null; return; }
+      btn.style.animation = '';
+      delete btn.dataset.qd;
+      if(!timer) return;
       clearTimeout(timer); timer = null;
       ring.style.strokeDashoffset = CIRC + 'px';
       pct.textContent = '0%';
@@ -95,6 +133,14 @@ const CONFIG = {
     btn.addEventListener('touchend', stop);
     btn.addEventListener('touchcancel', stop);
     btn.addEventListener('contextmenu', e=>e.preventDefault());
+
+    /* Keyboard: tahan Spasi/Enter untuk mengisi ring (aksesibilitas) */
+    btn.addEventListener('keydown', e=>{
+      if((e.key===' '||e.key==='Enter') && !e.repeat){ e.preventDefault(); start(e); }
+    });
+    btn.addEventListener('keyup', e=>{
+      if(e.key===' '||e.key==='Enter'){ e.preventDefault(); stop(); }
+    });
 
     window.unlockAll = function(){
       document.querySelectorAll('.gate').forEach(g=>g.classList.add('hidden'));
@@ -116,15 +162,33 @@ const CONFIG = {
       const now = new Date();
       let diff = CONFIG.anniversaryDate - now;
       if(diff <= 0){
+        /* Hari-H: judul berganti, kotak jadi ✨ */
+        const daysAfter = Math.max(0, Math.floor((now - CONFIG.anniversaryDate)/864e5));
         ['cd-d','cd-h','cd-m','cd-s'].forEach(id=>{
           const el=document.getElementById(id); if(el) el.textContent='00';
         });
+        const titleEl = document.querySelector('#countdown-section .sec-title');
+        if(titleEl && daysAfter < 2){
+          titleEl.textContent = 'Hari Ini Hari Istimewa Kita! 🎉';
+          document.querySelectorAll('.cd-box span').forEach(sp=>sp.textContent='✨');
+        } else {
+          /* Lewat dari hari-H: catatan hari setelahnya, hentikan loop */
+          const note = document.createElement('p');
+          note.className = 'together';
+          note.id = 'cd-after-note';
+          note.innerHTML = `Sudah <b>${(daysAfter+1).toLocaleString('id-ID')}</b> hari melewati hari istimewa itu 💞`;
+          const grid = document.querySelector('.cd-grid');
+          if(grid && !document.getElementById('cd-after-note')){
+            grid.parentNode.insertBefore(note, grid.nextSibling);
+          }
+        }
       } else {
         const d=Math.floor(diff/864e5), h=Math.floor((diff%864e5)/36e5),
               m=Math.floor((diff%36e5)/6e4), s=Math.floor((diff%6e4)/1e3);
         const set=(id,v)=>{const el=document.getElementById(id); if(el) el.textContent=String(v).padStart(2,'0');};
         set('cd-d',d); set('cd-h',h); set('cd-m',m); set('cd-s',s);
       }
+      if(diff <= 0) return; /* hari-H: tidak perlu loop tiap detik */
       const daysEl = document.getElementById('days-together');
       if(daysEl){
         const days = Math.max(0, Math.floor((now - CONFIG.startDate)/864e5));
@@ -228,6 +292,46 @@ Aku sayang kamu, hari ini dan seterusnya 💕
     }
     window.loadMorePolaroids = addBatch;
     addBatch();
+
+    /* Benang penghubung antar polaroid — SVG path melengkung dari
+       titik selotip satu polaroid ke polaroid berikutnya */
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const threadSvg = document.createElementNS(svgNS, 'svg');
+    threadSvg.id = 'threadSvg';
+    mess.insertBefore(threadSvg, mess.firstChild);
+
+    function drawThreads(){
+      const cards = [...mess.querySelectorAll('.polaroid')];
+      const mr = mess.getBoundingClientRect();
+      if(!cards.length){ threadSvg.innerHTML=''; return; }
+      threadSvg.setAttribute('viewBox', `0 0 ${mr.width} ${mr.height}`);
+      let paths = '';
+      for(let i=0; i<cards.length-1; i++){
+        const a = cards[i].getBoundingClientRect();
+        const b = cards[i+1].getBoundingClientRect();
+        /* Titik awal/akhir: tengah-selotip (atas kartu) */
+        const x1 = a.left - mr.left + a.width/2, y1 = a.top - mr.top + 2;
+        const x2 = b.left - mr.left + b.width/2, y2 = b.top - mr.top + 2;
+        /* Kontrol melengkung — searah rotasi biar natural */
+        const cx = (x1+x2)/2;
+        const cy = Math.max(y1,y2) + Math.abs(x2-x1)*0.35 + 14;
+        paths += `<path d="M ${x1.toFixed(1)} ${y1} Q ${cx} ${cy} ${x2.toFixed(1)} ${y2}" fill="none" stroke="#E8A0B4" stroke-width="1.6" stroke-linecap="round" opacity=".85"/>`;
+      }
+      /* Benang pertama & terakhir menjuntai ke atas (kayu dijahit) */
+      const f = cards[0].getBoundingClientRect(), l = cards[cards.length-1].getBoundingClientRect();
+      const fx = f.left - mr.left + f.width/2, lx = l.left - mr.left + l.width/2;
+      paths += `<path d="M ${fx.toFixed(1)} ${f.top-mr.top+2} Q ${(fx-18).toFixed(1)} ${(f.top-mr.top-26)} ${(fx+10).toFixed(1)} ${(f.top-mr.top-34)}" fill="none" stroke="#E8A0B4" stroke-width="1.6" stroke-linecap="round" opacity=".85"/>`;
+      paths += `<path d="M ${lx.toFixed(1)} ${l.top-mr.top+2} Q ${(lx+18).toFixed(1)} ${(l.top-mr.top-26)} ${(lx-10).toFixed(1)} ${(l.top-mr.top-34)}" fill="none" stroke="#E8A0B4" stroke-width="1.6" stroke-linecap="round" opacity=".85"/>`;
+      threadSvg.innerHTML = paths;
+    }
+
+    drawThreads();
+    /* Redraw setelah animasi masuk selesai & saat font/gambar siap */
+    setTimeout(drawThreads, 1300);
+    window.addEventListener('load', drawThreads);
+    window.addEventListener('resize', ()=>{ clearTimeout(window._threadT); window._threadT = setTimeout(drawThreads, 150); });
+    const _origAddBatch = addBatch;
+    window.loadMorePolaroids = function(){ _origAddBatch(); setTimeout(drawThreads, 80); };
 
     /* Lightbox + navigasi prev/next */
     const lb = document.getElementById('lightbox');
@@ -337,7 +441,7 @@ Aku sayang kamu, hari ini dan seterusnya 💕
 /* ===== 9. CONFETTI & CLOSING INTERACTIONS ===== */
 window.launchConfetti = function(){
   try{
-    const colors = ['#FF9EC4','#FFD6E8','#E85A8A','#E8365D','#FFF0F6','#FFD54F'];
+    const colors = ['#FF9EC4','#FFD6E8','#D64477','#E8365D','#FFF0F6','#FFD54F'];
     for(let i=0;i<90;i++){
       const c = document.createElement('div');
       c.className = 'confetti';
@@ -362,7 +466,8 @@ window.openGift = function(){
 window.toggleEnvelope = function(idx){
   const envs = document.querySelectorAll('.envelope');
   if(envs[idx]){
-    envs[idx].classList.toggle('open');
+    const open = envs[idx].classList.toggle('open');
+    envs[idx].setAttribute('aria-expanded', open);
   }
 };
 const style = document.createElement('style');
@@ -434,7 +539,7 @@ function synthStop(){
   try{
     const bg = document.getElementById('hearts-bg');
     const svgHeart = '<svg viewBox="0 0 24 24"><path d="M12 21C5.5 16.5 2.8 12.6 2.8 8.6 2.8 5.4 5.1 3.4 7.8 3.6c2 .1 3.6 1.2 4.2 2.8.6-1.6 2.2-2.7 4.2-2.8 2.7-.2 5 1.8 5 5 0 4-2.7 7.9-9.2 12.4z" fill="{c}"/></svg>';
-    const colors = ['#FF9EC4','#FFC8DC','#E85A8A','#FFD6E8'];
+    const colors = ['#FF9EC4','#FFC8DC','#D64477','#FFD6E8'];
     /* Kelopak: gradasi radial pink lembut, bulat — bukan kotak */
     const petalHTML = '<div class="petal-core"></div>';
 
@@ -530,3 +635,9 @@ function synthStop(){
     });
   }catch(err){ console.error('transition:', err); }
 })();
+
+/* ===== 13. PROTEKSI (dihapus dari JS — pindah ke CSS ringan) =====
+   Anti-drag/long-press foto kini via rule CSS `img` di aiv.css.
+   Pemblokiran klik kanan/copy/devtools dihapus: tidak efektif
+   (foto tetap bisa diambil via network tab/screenshot) dan
+   mengganggu pengguna sungguhan (screen reader, copy teks). */

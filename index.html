@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -107,8 +107,8 @@
 </div>
 
 <!-- LIGHTBOX -->
-<div id="lightbox">
-  <span id="lb-close">✕</span>
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Foto diperbesar">
+  <button id="lb-close" aria-label="Tutup">✕</button>
   <button id="lb-prev" class="lb-nav">‹</button>
   <div class="lb-frame">
     <img id="lb-img" src="" alt=""/>
@@ -190,15 +190,15 @@
   <!-- 3 AMPLOP RAHASIA -->
   <h3 class="envelope-title">Ada 3 pesan rahasia nih... 💌</h3>
   <div class="envelope-grid">
-    <button class="envelope" onclick="toggleEnvelope(0)">
+    <button class="envelope" aria-expanded="false" onclick="toggleEnvelope(0)">
       <span class="env-front">💌<b>Janji Ryan</b></span>
       <span class="env-back">"Selalu ada di setiap capek &amp; senyummu."</span>
     </button>
-    <button class="envelope" onclick="toggleEnvelope(1)">
+    <button class="envelope" aria-expanded="false" onclick="toggleEnvelope(1)">
       <span class="env-front">🎀<b>Momen Favorit</b></span>
       <span class="env-back">"Tawa lepasmu yang bikin semua masalah hilang."</span>
     </button>
-    <button class="envelope" onclick="toggleEnvelope(2)">
+    <button class="envelope" aria-expanded="false" onclick="toggleEnvelope(2)">
       <span class="env-front">✨<b>Harapan Kita</b></span>
       <span class="env-back">"Lebih banyak tempat baru yang kita datangi bareng."</span>
     </button>

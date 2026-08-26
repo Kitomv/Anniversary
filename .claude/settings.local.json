@@ -1,11 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Administrator\\\\Downloads\\\\1Aniv\" | Where-Object { $_.Extension -match \"\\\\.\\(jpg|jpeg|png\\)\" -and $_.Name -notmatch \"Kang Huda|Omnivision|iPhone 17|Perfect Color|iphone\" } | Sort-Object LastWriteTime | Select-Object Name, LastWriteTime | Format-Table -AutoSize | Out-String -Width 300)",
-      "PowerShell(git add *)",
-      "Bash(python -m http.server 8080)",
-      "Bash(curl *)",
-      "Bash(node *)"
+      "Bash(py --version)",
+      "Bash(winget --version)",
+      "Bash(winget install *)",
+      "Bash(npx serve *)"
     ]
   }
 }
