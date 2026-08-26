@@ -153,13 +153,17 @@ const CONFIG = {
     });
 
     window.unlockAll = function(){
-      document.querySelectorAll('.gate').forEach(g=>g.classList.add('hidden'));
+      /* Sakura sweep mulai; gate baru disembunyikan saat layar sudah
+         tertutup penuh (550ms) — hero tidak sempat terlihat duluan */
+      if(typeof window.playBlossomTransition==='function') window.playBlossomTransition();
+      setTimeout(()=>{
+        document.querySelectorAll('.gate').forEach(g=>g.classList.add('hidden'));
+      }, 540);
       document.body.style.overflow = '';
       const mt = document.getElementById('music-toggle');
       if(mt) mt.classList.add('show');
       const pn = document.getElementById('page-nav');
       if(pn) pn.classList.add('show');
-      if(typeof window.playBlossomTransition==='function') window.playBlossomTransition();
       /* Coba putar musik otomatis sekali — hanya jika user belum menyalakan
          sendiri dalam jendela 1200ms (hindari membalik pilihan user) */
       setTimeout(()=>{
