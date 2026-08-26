@@ -97,11 +97,10 @@ const CONFIG = {
         btn.classList.add('done');
         btn.style.animation = '';
         btn.querySelector('span').textContent = 'Terbuka!';
-        /* Wave hilang -> blur in 600ms -> tahan -> blur out 600ms -> jeda tenang -> sakura */
+        /* Wave hilang -> blur in -> tahan -> sakura langsung tutupi blur */
         const gate = document.getElementById('layer3');
         if(gate) gate.classList.add('blur-out');
-        setTimeout(()=>{ if(gate) gate.classList.remove('blur-out'); }, 1100);
-        setTimeout(unlockAll, 2100);
+        setTimeout(unlockAll, 1400);
       }, 560);
     }
     function tick(){
