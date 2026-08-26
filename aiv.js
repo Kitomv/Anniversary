@@ -14,7 +14,7 @@ const CONFIG = {
 /* ===== 1. GATE: PIN ===== */
 (function(){
   try{
-    let input = '';
+    let input = '', errTimer = null, resetTimer = null, locked = false;
     const dots = document.querySelectorAll('#pin-dots span');
     const errEl = document.getElementById('lock-error');
 
@@ -22,24 +22,30 @@ const CONFIG = {
       dots.forEach((d,i)=> d.classList.toggle('on', i < input.length));
     }
     window.lkPress = function(k){
-      if(input.length >= 6) return;
+      if(locked || input.length >= 6) return;
       input += k; render();
       if(input.length === 6){
         if(input === CONFIG.pin){
+          locked = true;
           setTimeout(()=>{
             document.getElementById('layer1').classList.add('hidden');
             document.getElementById('layer3').classList.remove('hidden');
           }, 250);
         } else {
-          setTimeout(()=>{
+          locked = true;
+          resetTimer = setTimeout(()=>{
             errEl.textContent = 'Kode salah, coba lagi ya 🙈';
-            input=''; render();
-            setTimeout(()=>{ errEl.textContent=''; }, 1800);
+            input=''; render(); locked = false;
+            clearTimeout(errTimer);
+            errTimer = setTimeout(()=>{ errEl.textContent=''; }, 1800);
           }, 200);
         }
       }
     };
-    window.lkBack = function(){ input = input.slice(0,-1); render(); };
+    window.lkBack = function(){
+      if(locked) return;
+      input = input.slice(0,-1); render();
+    };
     document.addEventListener('keydown', e=>{
       if(document.getElementById('layer1').classList.contains('hidden')) return;
       if(/^[0-9]$/.test(e.key)) window.lkPress(e.key);
@@ -150,7 +156,11 @@ const CONFIG = {
       const pn = document.getElementById('page-nav');
       if(pn) pn.classList.add('show');
       if(typeof window.playBlossomTransition==='function') window.playBlossomTransition();
-      setTimeout(()=>{ toggleMusic().catch(()=>{}); }, 1200);
+      /* Coba putar musik otomatis sekali — hanya jika user belum menyalakan
+         sendiri dalam jendela 1200ms (hindari membalik pilihan user) */
+      setTimeout(()=>{
+        if(!musicState) toggleMusic().catch(()=>{});
+      }, 1200);
     };
   }catch(err){ console.error('hold:', err); }
 })();
@@ -241,28 +251,22 @@ Aku sayang kamu, hari ini dan seterusnya 💕
 (function(){
   try{
     const DATA = window.AIV_DATA;
-    if(!DATA || !DATA.slides) return;
     const mess = document.getElementById('polaroidMess');
-    if(!mess) return;
-
-    /* Flatten semua foto & urutkan kronologis dari yang tertua */
-    const MONTHS = { Jan:'01', Feb:'02', Mar:'03', Apr:'04', May:'05', Jun:'06', Jul:'07', Aug:'08', Sep:'09', Oct:'10', Nov:'11', Dec:'12' };
-    function photoKey(name){
-      let m = name.match(/202[56][-_]?([01]\d)[- _]?([0-3]\d)(?:[-_ ]?([0-2]\d)([0-5]\d)([0-5]\d)?)?/);
-      if(m) return m[0].replace(/[-_ ]/g, '').padEnd(14, '0');
-      m = name.match(/(\d{1,2})_(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)(?:_(\d{2})_(\d{2}))?/);
-      if(m){
-        const d = m[1].padStart(2, '0'), mon = MONTHS[m[2]], hh = m[3] || '12', mm = m[4] || '00';
-        const y = ['Oct','Nov','Dec'].includes(m[2]) ? '2025' : '2026';
-        return `${y}${mon}${d}${hh}${mm}00`;
-      }
-      m = name.match(/^(\d{3})_Copy_of_/);
-      return `20250801000000_${m ? m[1] : '999'}`;
+    /* Data gagal load: sembunyikan tombol + sediakan no-op agar
+       onclick inline tidak melempar ReferenceError */
+    window.loadMorePolaroids = function(){};
+    const lmBtn = document.getElementById('loadMoreBtn');
+    if((!DATA || !DATA.slides || !mess) && lmBtn){
+      lmBtn.style.display = 'none';
+      return;
     }
+    if(!DATA || !DATA.slides || !mess) return;
 
+    /* Flatten semua foto — PERTAHANKAN urutan kurasi dari aiv-data.js
+       (sudah kronologis; jangan re-sort di runtime, parser duplikat
+       bisa menghasilkan urutan berbeda dari data) */
     const allPhotos = [];
     DATA.slides.forEach(s=>s.photos.forEach(p=>allPhotos.push(p)));
-    allPhotos.sort((a, b) => photoKey(a.name).localeCompare(photoKey(b.name)));
     const all = allPhotos.map(p => p.src);
 
     let shown = 0;
@@ -325,11 +329,21 @@ Aku sayang kamu, hari ini dan seterusnya 💕
       threadSvg.innerHTML = paths;
     }
 
-    drawThreads();
-    /* Redraw setelah animasi masuk selesai & saat font/gambar siap */
-    setTimeout(drawThreads, 1300);
-    window.addEventListener('load', drawThreads);
-    window.addEventListener('resize', ()=>{ clearTimeout(window._threadT); window._threadT = setTimeout(drawThreads, 150); });
+    /* Jangan gambar saat halaman hidden (getBoundingClientRect = 0).
+       Redraw dipicu saat halaman galeri benar-benar tampil (lihat
+       window._onGalleryVisible yang dipanggil gotoPage) + resize + load */
+    function isHidden(){
+      const page = document.getElementById('page-gallery');
+      return !page || page.classList.contains('hidden') || !mess.offsetWidth;
+    }
+    window.addEventListener('load', ()=>{ if(!isHidden()) drawThreads(); });
+    window.addEventListener('resize', ()=>{ clearTimeout(window._threadT); if(!isHidden()) window._threadT = setTimeout(drawThreads, 150); });
+    window._onGalleryVisible = function(){
+      if(isHidden()) return;
+      /* Tunggu animasi polaroidIn selesai agar posisi kartu final */
+      clearTimeout(window._threadT);
+      window._threadT = setTimeout(drawThreads, 1350);
+    };
     const _origAddBatch = addBatch;
     window.loadMorePolaroids = function(){ _origAddBatch(); setTimeout(drawThreads, 80); };
 
@@ -380,7 +394,9 @@ Aku sayang kamu, hari ini dan seterusnya 💕
   try{
     const sec = document.getElementById('stats-section');
     if(!sec) return;
-    const photoCount = window.AIV_DATA?.total || 157;
+    const photoCount = window.AIV_DATA?.slides
+      ? window.AIV_DATA.slides.reduce((n, s) => n + s.photos.length, 0)
+      : (window.AIV_DATA?.total || 0);
     const now = new Date();
     const daysTogether = Math.max(1, Math.floor((now - CONFIG.startDate)/864e5));
     const targets = {
@@ -455,10 +471,14 @@ window.launchConfetti = function(){
   }catch(err){ console.error('confetti:', err); }
 };
 
+let giftOpened = false;
 window.openGift = function(){
   const gb = document.getElementById('gift-box');
   if(gb) gb.classList.add('opened');
-  window.launchConfetti();
+  if(!giftOpened){
+    giftOpened = true;
+    window.launchConfetti();
+  }
   const rb = document.getElementById('surprise-reveal');
   if(rb) rb.classList.add('show');
 };
@@ -491,7 +511,9 @@ async function toggleMusic(){
   try{
     await audio.play();
   }catch(e){
-    synthStart();
+    /* play() bisa reject terlambat (autoplay policy) — jangan nyalakan
+       synth jika user sudah toggle off saat menunggu promise */
+    if(musicState) synthStart();
   }
 }
 window.toggleMusic = toggleMusic;
@@ -578,7 +600,7 @@ function synthStop(){
       t.className = 'blossom-transition';
 
       /* Preload 3 varian blossom — hindari lag saat render pertama */
-      const variants = ['blossom-a.png', 'blossom-b.png', 'pinkblossom2.png'];
+      const variants = ['blossom-a.png', 'blossom-b.png', 'pinkblossom2.webp'];
       if(!window._btPreloaded){
         window._btPreloaded = true;
         variants.forEach(v=>{ const i=new Image(); i.src='assets/transisi/'+v; });
@@ -628,6 +650,7 @@ function synthStop(){
           active.classList.remove('in');
           setTimeout(()=>active.classList.add('in'), 350);
         }
+        if(typeof window._onGalleryVisible === 'function') window._onGalleryVisible();
       });
     };
     document.querySelectorAll('#page-nav button').forEach(b=>{

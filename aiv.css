@@ -73,14 +73,6 @@ img { max-width: 100%; display: block; }
   border: 2.5px solid var(--pink); transition: all .15s;
 }
 .pin-dots span.on { background: var(--pink); box-shadow: 0 0 10px var(--pink); }
-.gate-dots { position: absolute; top: 1.2rem; display: flex; gap: .4rem; }
-.gate-dots .gd {
-  width: 26px; height: 6px; border-radius: 3px; background: var(--pink-light);
-}
-.gate-dots .gp {
-  width: 26px; height: 6px; border-radius: 3px; background: transparent;
-  border-bottom: none; color: transparent; font-size: 0;
-}
 
 .pin-pad { display: grid; grid-template-columns: repeat(3, 68px); gap: .6rem; }
 .pin-pad button {
@@ -93,23 +85,6 @@ img { max-width: 100%; display: block; }
 .pin-pad button:active { transform: scale(.92); background: var(--pink-light); }
 .pin-pad .ghost { visibility: hidden; }
 .gate-error { color: var(--red-bow); font-size: .85rem; min-height: 1.2em; font-weight: 600; }
-
-.question { font-size: 1.1rem; font-weight: 700; color: var(--pink-deep); margin-bottom: .4rem; }
-.quiz-options { display: flex; flex-direction: column; gap: .6rem; width: 100%; max-width: 300px; }
-.quiz-options button {
-  padding: .85rem 1rem; border-radius: 999px;
-  background: var(--white); color: var(--pink-dark); font-weight: 600; font-size: 1rem;
-  border: 2px solid var(--pink-light);
-  box-shadow: 0 3px 0 var(--pink-light);
-  transition: transform .1s, background .15s, border-color .15s;
-}
-.quiz-options button:hover { border-color: var(--pink); }
-.quiz-options button:active { transform: scale(.97); }
-.quiz-options button.ok { background: #EAFBF0; border-color: #58C88A; }
-.quiz-options button.no { animation: shakeX .4s ease; }
-@keyframes shakeX {
-  0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)}
-}
 
 .hold-wrap { position: relative; width: 150px; height: 150px; }
 .hold-ring { position: absolute; inset: 0; transform: rotate(-90deg); }

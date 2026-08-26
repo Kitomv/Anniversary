@@ -57,19 +57,15 @@ const SLIDES = [
     sub: 'Satu tahun pertama selesai. Cerita untuk terus tumbuh dan tertawa baru dimulai.' },
 ];
 
-const out = {
-  slides: SLIDES.map((meta, i) => ({
-    ...meta,
-    count: Math.ceil((all.length - i * 157 / 5) / (5 - i)) | 0,
-    photos: []
-  })),
-  total: all.length,
-};
+/* PERINGATAN: script ini MENIMPA aiv-data.js. Urutan & pembagian babak
+   yang ada sekarang sudah dikurasi manual — jangan dijalankan ulang
+   kecuali memang mau regenerasi penuh dari nol. */
 
-/* Bagi merata: tiap slide dapat ~ceil(sisa/foto tersisa) */
+const out = { slides: [], total: all.length };
+
+/* Bagi merata: tiap slide dapat ~round(n/slide), sisanya ke slide terakhir */
 let offset = 0;
 out.slides = SLIDES.map((meta, i) => {
-  const remainingSlides = SLIDES.length - i;
   const count = i === SLIDES.length - 1
     ? all.length - offset
     : Math.round(all.length / SLIDES.length);
