@@ -374,33 +374,29 @@ Aku sayang kamu, hari ini dan seterusnya 💕
       if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
       else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
     }
-    let lbAnimSeq = 0;
+    let lbNavTimer = null;
     function showLB(i, navDir){
       if(!all.length) return;
       const isOpen = lb.classList.contains('show');
-      const prev = lbIndex;
-      lbIndex = (i + all.length) % all.length;
       lbPrevFocus = isOpen ? lbPrevFocus : document.activeElement;
       const frame = lb.querySelector('.lb-frame');
       if(isOpen && navDir){
-        /* Navigasi di dalam lightbox: slide-out lama, slide-in baru */
-        const seq = ++lbAnimSeq;
-        frame.onanimationend = null;
+        /* Navigasi: slide-out lama (280ms) → ganti src → lbIn masuk */
+        clearTimeout(lbNavTimer);
         frame.style.animation = 'none';
         void frame.offsetWidth;
         lb.dataset.dir = navDir;
-        frame.onanimationend = ()=>{
-          if(seq !== lbAnimSeq) return;
-          frame.onanimationend = null;
-          /* Foto baru masuk dengan lbIn */
+        lbNavTimer = setTimeout(()=>{
           delete lb.dataset.dir;
-          lbImg.src = all[lbIndex];
+          lbImg.src = all[i];
+          lbIndex = (i + all.length) % all.length;
           frame.style.animation = 'none';
           void frame.offsetWidth;
           frame.style.animation = '';
-        };
+        }, 280);
       } else {
         /* Buka pertama kali: lbIn scale */
+        lbIndex = (i + all.length) % all.length;
         lbImg.src = all[lbIndex];
         frame.style.animation = 'none';
         void frame.offsetWidth;
