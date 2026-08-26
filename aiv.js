@@ -322,13 +322,13 @@ Aku sayang kamu, hari ini dan seterusnya 💕
         /* Kontrol melengkung — searah rotasi biar natural */
         const cx = (x1+x2)/2;
         const cy = Math.max(y1,y2) + Math.abs(x2-x1)*0.35 + 14;
-        paths += `<path d="M ${x1.toFixed(1)} ${y1} Q ${cx} ${cy} ${x2.toFixed(1)} ${y2}" fill="none" stroke="#E8A0B4" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>`;
+        paths += `<path d="M ${x1.toFixed(1)} ${y1} Q ${cx} ${cy} ${x2.toFixed(1)} ${y2}" fill="none" stroke="#E8365D" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>`;
       }
       /* Benang pertama & terakhir menjuntai ke atas (kayu dijahit) */
       const f = cards[0].getBoundingClientRect(), l = cards[cards.length-1].getBoundingClientRect();
       const fx = f.left - mr.left + f.width/2, lx = l.left - mr.left + l.width/2;
-      paths += `<path d="M ${fx.toFixed(1)} ${f.top-mr.top+2} Q ${(fx-18).toFixed(1)} ${(f.top-mr.top-26)} ${(fx+10).toFixed(1)} ${(f.top-mr.top-34)}" fill="none" stroke="#E8A0B4" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>`;
-      paths += `<path d="M ${lx.toFixed(1)} ${l.top-mr.top+2} Q ${(lx+18).toFixed(1)} ${(l.top-mr.top-26)} ${(lx-10).toFixed(1)} ${(l.top-mr.top-34)}" fill="none" stroke="#E8A0B4" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>`;
+      paths += `<path d="M ${fx.toFixed(1)} ${f.top-mr.top+2} Q ${(fx-18).toFixed(1)} ${(f.top-mr.top-26)} ${(fx+10).toFixed(1)} ${(f.top-mr.top-34)}" fill="none" stroke="#E8365D" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>`;
+      paths += `<path d="M ${lx.toFixed(1)} ${l.top-mr.top+2} Q ${(lx+18).toFixed(1)} ${(l.top-mr.top-26)} ${(lx-10).toFixed(1)} ${(l.top-mr.top-34)}" fill="none" stroke="#E8365D" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>`;
       threadSvg.innerHTML = paths;
     }
 
