@@ -4,7 +4,12 @@
       "Bash(py --version)",
       "Bash(winget --version)",
       "Bash(winget install *)",
-      "Bash(npx serve *)"
+      "Bash(npx serve *)",
+      "Bash(node --check aiv.js)",
+      "Bash(node --check sw.js)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('manifest.webmanifest','utf8'\\)\\); console.log\\('manifest OK'\\)\")",
+      "Bash(git add *)",
+      "Bash(git -c core.safecrlf=false commit -m 'PWA + tombol fullscreen: layar penuh di smartphone *)"
     ]
   }
 }

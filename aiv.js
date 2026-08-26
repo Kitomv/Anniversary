@@ -677,3 +677,33 @@ function synthStop(){
     }, {passive:true});
   }catch(err){ console.error('proteksi:', err); }
 })();
+
+/* ===== 14. FULLSCREEN TOGGLE + SERVICE WORKER ===== */
+(function(){
+  try{
+    const fsBtn = document.getElementById('fullscreen-toggle');
+    /* Fullscreen API tidak ada di iOS Safari halaman web — sembunyikan tombol;
+       di iPhone jalur layar penuh adalah Add to Home Screen (PWA) */
+    if(fsBtn && document.documentElement.requestFullscreen){
+      fsBtn.classList.add('available');
+      fsBtn.addEventListener('click', ()=>{
+        const doc = document, root = doc.documentElement;
+        if(!doc.fullscreenElement && !doc.webkitFullscreenElement){
+          (root.requestFullscreen || root.webkitRequestFullscreen).call(root).catch(()=>{});
+        } else {
+          (doc.exitFullscreen || doc.webkitExitFullscreen).call(doc);
+        }
+      });
+      const sync = ()=> fsBtn.classList.toggle('fs-on', !!(document.fullscreenElement || document.webkitFullscreenElement));
+      document.addEventListener('fullscreenchange', sync);
+      document.addEventListener('webkitfullscreenchange', sync);
+    }
+
+    /* Register service worker hanya via http/https (bukan file://) */
+    if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+      window.addEventListener('load', ()=>{
+        navigator.serviceWorker.register('sw.js').catch(()=>{});
+      });
+    }
+  }catch(err){ console.error('fullscreen/sw:', err); }
+})();

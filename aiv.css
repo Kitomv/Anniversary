@@ -278,6 +278,23 @@ img { max-width: 100%; display: block; }
   to   { transform: rotate(360deg); }
 }
 
+/* ===== FULLSCREEN BUTTON ===== */
+#fullscreen-toggle {
+  position: fixed; top: calc(4.4rem + env(safe-area-inset-top)); right: calc(1rem + env(safe-area-inset-right));
+  z-index: 260;
+  width: 48px; height: 48px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--pink-deep));
+  color: #fff;
+  display: grid; place-items: center; padding: 0;
+  box-shadow: 0 4px 16px rgba(232,90,138,.45);
+  opacity: 0; pointer-events: none;
+  transition: opacity .4s;
+}
+#fullscreen-toggle .ic-compress { display: none; }
+#fullscreen-toggle.fs-on .ic-expand { display: none; }
+#fullscreen-toggle.fs-on .ic-compress { display: block; }
+#fullscreen-toggle.available.show { opacity: 1; pointer-events: auto; }
+
 /* ===== PAGE SYSTEM — satu layar per halaman, transisi sakura ===== */
 .page { min-height: 100vh; }
 @supports (min-height: 100svh) { .page { min-height: 100svh; } }

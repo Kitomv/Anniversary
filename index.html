@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<meta name="theme-color" content="#FF9EC4"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Kado 💝"/>
+<link rel="apple-touch-icon" href="assets/icon-192.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -52,6 +59,10 @@
 <audio id="bg-audio" preload="metadata" loop src="audio/kota-ini-tak-sama-tanpamu.mp3"></audio>
 <button id="music-toggle" title="Putar lagu" aria-label="Putar atau hentikan musik">
   <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 18.5V6.2c0-.5.3-.9.8-1l8-1.8c.6-.15 1.2.3 1.2 1v11.9c0 1.4-1 2.3-2.5 2.6-1 .2-2-.5-2-1.5s.7-1.6 1.8-1.9l1.7-.4V7.1l-7 1.6v9.8c0 1.4-1 2.3-2.5 2.6-1 .2-2-.5-2-1.5s.7-1.6 1.8-1.9l1.7-.4z" fill="currentColor"/></svg>
+</button>
+<button id="fullscreen-toggle" title="Layar penuh" aria-label="Layar penuh">
+  <svg class="ic-expand" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  <svg class="ic-compress" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 4v3a2 2 0 0 1-2 2H4M15 4v3a2 2 0 0 0 2 2h3M20 15h-3a2 2 0 0 0-2 2v3M4 15h3a2 2 0 0 1 2 2v3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
 </button>
 
 <!-- ===== NAV MENU (tab bawah) ===== -->
