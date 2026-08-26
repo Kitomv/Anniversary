@@ -1,6 +1,9 @@
 /* ==========================================================
    KADO DIGITAL HELLO KITTY — Pink Anniversary Theme
-   Simple & solid: flexbox, no z-index tricks, mobile-first
+   Simple & solid: flexbox, mobile-first, z-index layers:
+   hearts(1) < sections(2) < polaroid(5) < confetti(200)
+   < nav(250) < music/fs(260) < blossom(500) < gate(100)
+   < lightbox(9999) < lb-buttons(10001)
    ========================================================== */
 :root {
   --pink-light: #FFD6E8;
@@ -762,6 +765,11 @@ body {
   -moz-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
+}
+/* Kecualikan konten teks yang memang dibaca / di-copy */
+#typed-text, .letter-card p, .stats-quote-card p,
+.cert-desc, .special-confession, .love-certificate h3 {
+  -webkit-user-select: text; user-select: text;
 }
 img {
   pointer-events: none;

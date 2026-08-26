@@ -22,17 +22,30 @@ self.addEventListener('activate', e => {
   );
 });
 
-/* Cache-first; foto & audio di-cache saat pertama diminta (stale-while-revisit) */
+/* Network-first untuk shell assets (HTML/CSS/JS) — selalu ambil versi terbaru;
+   cache-first untuk foto & audio — hemat bandwidth */
 self.addEventListener('fetch', e => {
   if(e.request.method !== 'GET') return;
-  e.respondWith(
-    caches.match(e.request).then(hit =>
-      hit ||
+  const url = e.request.url;
+  const isShell = SHELL.some(s => url.endsWith(s.replace('./', '')));
+  if(isShell){
+    e.respondWith(
       fetch(e.request).then(res => {
         const copy = res.clone();
         caches.open(CACHE).then(c => c.put(e.request, copy));
         return res;
-      }).catch(() => hit)
-    )
-  );
+      }).catch(() => caches.match(e.request))
+    );
+  } else {
+    e.respondWith(
+      caches.match(e.request).then(hit =>
+        hit ||
+        fetch(e.request).then(res => {
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, copy));
+          return res;
+        })
+      )
+    );
+  }
 });

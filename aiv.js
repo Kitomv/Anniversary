@@ -81,7 +81,7 @@ const CONFIG = {
       }
     }
 
-    function explode(done){
+    function explode(){
       /* Ring kejut */
       burst = document.createElement('div');
       burst.className = 'burst-ring go';
@@ -93,7 +93,6 @@ const CONFIG = {
       btn.querySelector('span').textContent = '💗';
       pct.textContent = '100% ♥';
       setTimeout(()=>{
-        done();
         btn.classList.remove('exploding');
         btn.classList.add('done');
         btn.style.animation = '';
@@ -105,17 +104,12 @@ const CONFIG = {
         setTimeout(unlockAll, 700);
       }, 560);
     }
-
-    function done(){
-      btn.classList.add('done');
-      pct.textContent = '100% ♥';
-    }
     function tick(){
       const p = Math.min(1,(Date.now()-startT)/HOLD_MS);
       ring.style.strokeDashoffset = (CIRC*(1-p)) + 'px';
       pct.textContent = Math.round(p*100) + '%';
       setQuiverSpeed(p);
-      if(p >= 1){ explode(done); return; }
+      if(p >= 1){ explode(); return; }
       timer = setTimeout(tick, 40);
     }
     function start(e){
@@ -357,19 +351,36 @@ Aku sayang kamu, hari ini dan seterusnya 💕
     const _origAddBatch = addBatch;
     window.loadMorePolaroids = function(){ _origAddBatch(); setTimeout(drawThreads, 80); };
 
-    /* Lightbox + navigasi prev/next */
+    /* Lightbox + navigasi prev/next + focus trap */
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lb-img');
-    let lbIndex = 0;
+    const lbBtns = lb.querySelectorAll('button');
+    let lbIndex = 0, lbPrevFocus = null;
+
+    function closeLB(){
+      lb.classList.remove('show');
+      document.removeEventListener('keydown', lbKeyTrap);
+      if(lbPrevFocus) lbPrevFocus.focus();
+    }
+    function lbKeyTrap(e){
+      if(e.key==='Escape'){ closeLB(); return; }
+      if(e.key!=='Tab') return;
+      const first = lbBtns[0], last = lbBtns[lbBtns.length-1];
+      if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+    }
     function showLB(i){
       lbIndex = (i + all.length) % all.length;
       lbImg.src = all[lbIndex];
+      lbPrevFocus = document.activeElement;
       lb.classList.add('show');
+      document.addEventListener('keydown', lbKeyTrap);
+      lbBtns[0].focus();
     }
-    document.getElementById('lb-close').addEventListener('click', ()=>{ lb.classList.remove('show'); });
+    document.getElementById('lb-close').addEventListener('click', closeLB);
     document.getElementById('lb-prev').addEventListener('click', e=>{ e.stopPropagation(); showLB(lbIndex - 1); });
     document.getElementById('lb-next').addEventListener('click', e=>{ e.stopPropagation(); showLB(lbIndex + 1); });
-    lb.addEventListener('click', e=>{ if(e.target===lb) lb.classList.remove('show'); });
+    lb.addEventListener('click', e=>{ if(e.target===lb) closeLB(); });
     window.openLB = function(src){
       const idx = all.indexOf(src);
       showLB(idx >= 0 ? idx : 0);
@@ -389,12 +400,11 @@ Aku sayang kamu, hari ini dan seterusnya 💕
         swiped = true;
       }
     }, {passive:true});
-    /* Panah keyboard */
+    /* Panah keyboard — Escape ditangani lbKeyTrap */
     document.addEventListener('keydown', e=>{
       if(!lb.classList.contains('show')) return;
       if(e.key === 'ArrowRight') showLB(lbIndex + 1);
       if(e.key === 'ArrowLeft')  showLB(lbIndex - 1);
-      if(e.key === 'Escape')     lb.classList.remove('show');
     });
   }catch(err){ console.error('galeri:', err); }
 })();
@@ -533,7 +543,12 @@ if(musicBtn) musicBtn.addEventListener('click', ()=>toggleMusic().catch(()=>{}))
 let synthCtx = null, synthTimer = null, synthGain = null;
 function synthStart(){
   try{
-    if(synthCtx) { synthCtx.resume(); scheduleLoop(); return; }
+    if(synthCtx && synthCtx.state !== 'closed'){
+      synthGain.gain.value = .12;
+      synthGain.connect(synthCtx.destination);
+      scheduleLoop();
+      return;
+    }
     synthCtx = new (window.AudioContext||window.webkitAudioContext)();
     synthGain = synthCtx.createGain();
     synthGain.gain.value = .12;
@@ -563,7 +578,7 @@ function playNote(f,t,dur){
 }
 function synthStop(){
   if(synthTimer){ clearTimeout(synthTimer); synthTimer=null; }
-  if(synthCtx) synthCtx.suspend();
+  if(synthGain) synthGain.disconnect();
 }
 
 /* ===== 11. FLOATING PETALS (sakura) + HATI ===== */
