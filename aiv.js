@@ -358,6 +358,12 @@ Aku sayang kamu, hari ini dan seterusnya 💕
 
     function closeLB(){
       lb.classList.remove('show');
+      delete lb.dataset.dir;
+      const frame = lb.querySelector('.lb-frame');
+      if(frame){
+        frame.onanimationend = null;
+        frame.style.animation = '';
+      }
       document.removeEventListener('keydown', lbKeyTrap);
       if(lbPrevFocus) lbPrevFocus.focus();
     }
@@ -368,23 +374,34 @@ Aku sayang kamu, hari ini dan seterusnya 💕
       if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
       else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
     }
-    function showLB(i){
+    let lbAnimSeq = 0;
+    function showLB(i, navDir){
+      if(!all.length) return;
       const isOpen = lb.classList.contains('show');
       const prev = lbIndex;
       lbIndex = (i + all.length) % all.length;
-      lbImg.src = all[lbIndex];
-      lbPrevFocus = document.activeElement;
-      if(isOpen){
-        /* Navigasi di dalam lightbox: slide arah kiri/kanan */
-        const dir = (lbIndex > prev || (prev === all.length-1 && lbIndex === 0)) ? 'left' : 'right';
-        const frame = lb.querySelector('.lb-frame');
+      lbPrevFocus = isOpen ? lbPrevFocus : document.activeElement;
+      const frame = lb.querySelector('.lb-frame');
+      if(isOpen && navDir){
+        /* Navigasi di dalam lightbox: slide-out lama, slide-in baru */
+        const seq = ++lbAnimSeq;
+        frame.onanimationend = null;
         frame.style.animation = 'none';
         void frame.offsetWidth;
-        lb.dataset.dir = dir;
-        frame.onanimationend = ()=>{ delete lb.dataset.dir; frame.onanimationend = null; };
+        lb.dataset.dir = navDir;
+        frame.onanimationend = ()=>{
+          if(seq !== lbAnimSeq) return;
+          frame.onanimationend = null;
+          /* Foto baru masuk dengan lbIn */
+          delete lb.dataset.dir;
+          lbImg.src = all[lbIndex];
+          frame.style.animation = 'none';
+          void frame.offsetWidth;
+          frame.style.animation = '';
+        };
       } else {
-        /* Buka pertama kali: restart lbIn animation */
-        const frame = lb.querySelector('.lb-frame');
+        /* Buka pertama kali: lbIn scale */
+        lbImg.src = all[lbIndex];
         frame.style.animation = 'none';
         void frame.offsetWidth;
         frame.style.animation = '';
@@ -394,12 +411,13 @@ Aku sayang kamu, hari ini dan seterusnya 💕
       lbBtns[0].focus();
     }
     document.getElementById('lb-close').addEventListener('click', closeLB);
-    document.getElementById('lb-prev').addEventListener('click', e=>{ e.stopPropagation(); showLB(lbIndex - 1); });
-    document.getElementById('lb-next').addEventListener('click', e=>{ e.stopPropagation(); showLB(lbIndex + 1); });
+    document.getElementById('lb-prev').addEventListener('click', e=>{ e.stopPropagation(); showLB(lbIndex - 1, 'right'); });
+    document.getElementById('lb-next').addEventListener('click', e=>{ e.stopPropagation(); showLB(lbIndex + 1, 'left'); });
     lb.addEventListener('click', e=>{ if(e.target===lb) closeLB(); });
     window.openLB = function(src){
       const idx = all.indexOf(src);
-      showLB(idx >= 0 ? idx : 0);
+      if(lb.classList.contains('show')) closeLB();
+      setTimeout(()=> showLB(idx >= 0 ? idx : 0), 50);
     };
 
     /* Swipe kiri/kanan & pan untuk pindah foto */
@@ -412,15 +430,15 @@ Aku sayang kamu, hari ini dan seterusnya 💕
       const dx = e.touches[0].clientX - touchX;
       const dy = e.touches[0].clientY - touchY;
       if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)){
-        showLB(lbIndex + (dx < 0 ? 1 : -1));
+        showLB(lbIndex + (dx < 0 ? 1 : -1), dx < 0 ? 'left' : 'right');
         swiped = true;
       }
     }, {passive:true});
     /* Panah keyboard — Escape ditangani lbKeyTrap */
     document.addEventListener('keydown', e=>{
       if(!lb.classList.contains('show')) return;
-      if(e.key === 'ArrowRight') showLB(lbIndex + 1);
-      if(e.key === 'ArrowLeft')  showLB(lbIndex - 1);
+      if(e.key === 'ArrowRight') showLB(lbIndex + 1, 'left');
+      if(e.key === 'ArrowLeft')  showLB(lbIndex - 1, 'right');
     });
   }catch(err){ console.error('galeri:', err); }
 })();
