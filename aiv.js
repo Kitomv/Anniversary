@@ -416,8 +416,7 @@ Aku sayang kamu, hari ini dan seterusnya 💕
     lb.addEventListener('click', e=>{ if(e.target===lb) closeLB(); });
     window.openLB = function(src){
       const idx = all.indexOf(src);
-      if(lb.classList.contains('show')) closeLB();
-      setTimeout(()=> showLB(idx >= 0 ? idx : 0), 50);
+      showLB(idx >= 0 ? idx : 0);
     };
 
     /* Swipe kiri/kanan & pan untuk pindah foto */
