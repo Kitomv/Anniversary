@@ -98,7 +98,10 @@ const CONFIG = {
         btn.classList.add('done');
         btn.style.animation = '';
         btn.querySelector('span').textContent = 'Terbuka!';
-        /* Tunggu wave & partikel benar-benar hilang, baru transisi sakura */
+        /* Wave hilang -> layar blur lembut 450ms -> jeda -> transisi sakura */
+        const gate = document.getElementById('layer3');
+        if(gate) gate.classList.add('blur-out');
+        setTimeout(()=>{ if(gate) gate.classList.remove('blur-out'); }, 500);
         setTimeout(unlockAll, 700);
       }, 560);
     }
