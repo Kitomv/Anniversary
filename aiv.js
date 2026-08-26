@@ -285,7 +285,8 @@ Aku sayang kamu, hari ini dan seterusnya 💕
         card.style.animationDelay = (idx*60)+'ms';
 
         const img = document.createElement('img');
-        img.src = src; img.loading='lazy'; img.alt='';
+        img.src = src; img.loading='lazy';
+        img.alt = 'Foto ' + (shown + idx + 1) + ' dari ' + all.length;
         card.addEventListener('click', ()=>openLB(src));
         card.appendChild(img);
         mess.appendChild(card);
@@ -363,6 +364,8 @@ Aku sayang kamu, hari ini dan seterusnya 💕
       const frame = lb.querySelector('.lb-frame');
       if(frame){
         frame.onanimationend = null;
+        frame.style.animation = 'none';
+        void frame.offsetWidth;
         frame.style.animation = '';
       }
       document.removeEventListener('keydown', lbKeyTrap);
@@ -545,6 +548,8 @@ window.toggleEnvelope = function(idx){
   if(envs[idx]){
     const open = envs[idx].classList.toggle('open');
     envs[idx].setAttribute('aria-expanded', open);
+    const back = envs[idx].querySelector('.env-back');
+    if(back) back.setAttribute('aria-hidden', !open);
   }
 };
 const style = document.createElement('style');
@@ -615,7 +620,7 @@ function playNote(f,t,dur){
 }
 function synthStop(){
   if(synthTimer){ clearTimeout(synthTimer); synthTimer=null; }
-  if(synthGain) synthGain.disconnect();
+  if(synthCtx) synthCtx.suspend();
 }
 
 /* ===== 11. FLOATING PETALS (sakura) + HATI ===== */
@@ -647,10 +652,19 @@ function synthStop(){
       bg.appendChild(el);
       setTimeout(()=>el.remove(), 20000);
     }
-    setInterval(spawnPetal, 700);
-    setInterval(spawnHeart, 1800);
+    const idPetal = setInterval(spawnPetal, 700);
+    const idHeart = setInterval(spawnHeart, 1800);
     for(let i=0;i<8;i++){ spawnPetal(); }
     for(let i=0;i<3;i++) spawnHeart();
+    document.addEventListener('visibilitychange', ()=>{
+      if(document.hidden){
+        clearInterval(idPetal); clearInterval(idHeart);
+      } else {
+        /* Restart intervals saat tab kembali aktif */
+        setInterval(spawnPetal, 700);
+        setInterval(spawnHeart, 1800);
+      }
+    });
   }catch(err){ console.error('particles:', err); }
 })();
 
@@ -704,7 +718,10 @@ function synthStop(){
           if(el) el.classList.toggle('hidden', p!==name);
         });
         document.querySelectorAll('#page-nav button').forEach(b=>{
-          b.classList.toggle('on', b.getAttribute('data-page')===name);
+          const active = b.getAttribute('data-page')===name;
+          b.classList.toggle('on', active);
+          if(active) b.setAttribute('aria-current','page');
+          else b.removeAttribute('aria-current');
         });
         window.scrollTo(0,0);
         const active = document.querySelector('#page-'+name+' .pop-section');
@@ -729,10 +746,10 @@ function synthStop(){
       if(e.target && e.target.tagName === 'IMG') e.preventDefault();
     });
 
-    /* Long-press teks/gambar di mobile: blokir seleksi & callout */
+    /* Long-press gambar di mobile: blokir callout */
     document.addEventListener('touchstart', function(e){
       const t = e.target;
-      if(t && (t.tagName === 'IMG' || t.tagName === 'P' || t.tagName === 'B' || t.tagName === 'SPAN')){
+      if(t && t.tagName === 'IMG'){
         t.style.webkitUserSelect = 'none';
         t.style.userSelect = 'none';
       }

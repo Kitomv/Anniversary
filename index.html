@@ -26,10 +26,10 @@
   </div>
   <h2>Kado Spesial Buat Kamu 🎀</h2>
   <p class="hint">Masukkan tanggal jadian kita (6 angka)</p>
-  <div class="pin-dots" id="pin-dots">
+  <div class="pin-dots" id="pin-dots" aria-live="polite">
     <span></span><span></span><span></span><span></span><span></span><span></span>
   </div>
-  <div class="pin-pad" id="pin-pad">
+  <div class="pin-pad" id="pin-pad" aria-label="Pin numerik">
     <button onclick="lkPress('1')">1</button><button onclick="lkPress('2')">2</button><button onclick="lkPress('3')">3</button>
     <button onclick="lkPress('4')">4</button><button onclick="lkPress('5')">5</button><button onclick="lkPress('6')">6</button>
     <button onclick="lkPress('7')">7</button><button onclick="lkPress('8')">8</button><button onclick="lkPress('9')">9</button>
@@ -87,7 +87,7 @@
 <!-- ===== COUNTDOWN ===== -->
 <section id="countdown-section" class="pop-section">
   <h2 class="sec-title">Menuju Hari Istimewa Kita 🗓️</h2>
-  <div class="cd-grid">
+  <div class="cd-grid" aria-live="polite" aria-atomic="true">
     <div class="cd-box"><b id="cd-d">00</b><span>Hari</span></div>
     <div class="cd-box"><b id="cd-h">00</b><span>Jam</span></div>
     <div class="cd-box"><b id="cd-m">00</b><span>Menit</span></div>
@@ -204,15 +204,15 @@
   <div class="envelope-grid">
     <button class="envelope" aria-expanded="false" onclick="toggleEnvelope(0)">
       <span class="env-front">💌<b>Janji Ryan</b></span>
-      <span class="env-back">"Selalu ada di setiap capek &amp; senyummu."</span>
+      <span class="env-back" aria-hidden="true">"Selalu ada di setiap capek &amp; senyummu."</span>
     </button>
     <button class="envelope" aria-expanded="false" onclick="toggleEnvelope(1)">
       <span class="env-front">🎀<b>Momen Favorit</b></span>
-      <span class="env-back">"Tawa lepasmu yang bikin semua masalah hilang."</span>
+      <span class="env-back" aria-hidden="true">"Tawa lepasmu yang bikin semua masalah hilang."</span>
     </button>
     <button class="envelope" aria-expanded="false" onclick="toggleEnvelope(2)">
       <span class="env-front">✨<b>Harapan Kita</b></span>
-      <span class="env-back">"Lebih banyak tempat baru yang kita datangi bareng."</span>
+      <span class="env-back" aria-hidden="true">"Lebih banyak tempat baru yang kita datangi bareng."</span>
     </button>
   </div>
 
