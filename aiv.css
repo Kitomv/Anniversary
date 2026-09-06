@@ -95,11 +95,18 @@ img { max-width: 100%; display: block; }
 .gate-error { color: var(--red-bow); font-size: .85rem; min-height: 1.2em; font-weight: 600; }
 
 /* Gembok PIN — transisi kunci terbuka */
-.pin-lock { margin: .4rem 0 0; }
+.pin-lock { margin: .4rem 0 0; animation: lockFloat 2.6s ease-in-out infinite; }
 .pin-lock svg { overflow: visible; }
 .lk-glow { fill: none; stroke: transparent; stroke-width: 2; }
 .lk-shackle { transform-origin: 24px 24px; transition: transform .5s cubic-bezier(.34,1.4,.5,1); }
 .lk-body { transition: fill .3s; }
+/* Idle: mengambang pelan agar tak terlihat diam */
+@keyframes lockFloat {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50%     { transform: translateY(-6px) rotate(2deg); }
+}
+/* Saat terbuka: stop idle agar fokus ke animasi unlock */
+#pin-lock.unlock { animation: none; }
 #pin-lock.unlock .lk-shackle { transform: translateY(-10px) rotate(8deg); }
 #pin-lock.unlock .lk-glow { animation: lockGlow .8s ease-out; }
 #pin-lock.unlock .lk-body { fill: #58C88A; }
