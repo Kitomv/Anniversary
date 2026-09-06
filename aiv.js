@@ -621,7 +621,7 @@ async function toggleMusic(){
   const btn = document.getElementById('music-toggle');
   if(musicState){
     musicState = false;
-    audio.pause(); audio.currentTime = 0;
+    audio.pause(); /* tanpa reset currentTime — resume lanjut dari posisi */
     synthStop();
     btn.classList.add('off');
     return;
