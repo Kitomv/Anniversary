@@ -177,8 +177,23 @@
   <p>Makasih udah jadi bagian paling indah dari setahun ini.<br/>Aku sayang kamu, hari ini, besok, dan seterusnya.</p>
 
   <!-- KADO KEJUTAN INTERAKTIF -->
-  <p class="gift-hint">Ketuk kadonya untuk buka kejutannya 🎁</p>
-  <button id="gift-box" onclick="openGift()" aria-label="Buka kejutan">
+  <p class="gift-hint">Ketuk 10 hati buat buka kadonya 🎀</p>
+  <div id="heart-taps">
+    <div class="tap-hearts">
+      <button class="tap-heart" aria-label="Ketuk hati">💗</button>
+      <button class="tap-heart" aria-label="Ketuk hati">💗</button>
+      <button class="tap-heart" aria-label="Ketuk hati">💗</button>
+      <button class="tap-heart" aria-label="Ketuk hati">💗</button>
+      <button class="tap-heart" aria-label="Ketuk hati">💗</button>
+      <button class="tap-heart" aria-label="Ketuk hati">💗</button>
+      <button class="tap-heart" aria-label="Ketuk hati">💗</button>
+      <button class="tap-heart" aria-label="Ketuk hati">💗</button>
+      <button class="tap-heart" aria-label="Ketuk hati">💗</button>
+      <button class="tap-heart" aria-label="Ketuk hati">💗</button>
+    </div>
+    <p class="tap-progress" id="tap-progress" aria-live="polite">0 / 10</p>
+  </div>
+  <button id="gift-box" onclick="openGift()" aria-label="Buka kejutan" disabled>
     <svg viewBox="0 0 120 120" width="150" height="150">
       <g id="gift-body">
         <rect x="22" y="48" width="76" height="58" rx="8" fill="#FF9EC4"/>

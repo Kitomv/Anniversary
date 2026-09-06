@@ -575,11 +575,41 @@ section { position: relative; z-index: 2; max-width: 680px; margin: 0 auto; padd
 
 /* KADO KEJUTAN */
 .gift-hint { margin-top: 1.4rem; font-size: .9rem; font-weight: 700; color: var(--pink-dark); }
+
+/* Game: Tap 10 hati sebelum buka kado */
+#heart-taps { margin-top: 1rem; display: flex; flex-direction: column; align-items: center; gap: .6rem; }
+.tap-hearts {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: .6rem; max-width: 300px; width: 100%;
+}
+.tap-heart {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--white);
+  border: 2px solid var(--pink-light);
+  font-size: 1.3rem; display: grid; place-items: center;
+  opacity: .35; filter: grayscale(.4);
+  transition: opacity .2s, transform .15s, filter .2s;
+}
+.tap-heart.tapped {
+  opacity: 1; filter: none;
+  animation: heartTapBurst .35s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes heartTapBurst {
+  0% { transform: scale(.8); }
+  60% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+.tap-progress { font-weight: 800; color: var(--pink-deep); font-size: .95rem; min-height: 1.2em; }
+
 #gift-box {
   display: inline-block; margin-top: .6rem;
   background: transparent; border: none; cursor: pointer;
   animation: giftWiggle 2s ease-in-out infinite;
-  transition: transform .15s;
+  transition: transform .15s, opacity .3s;
+}
+#gift-box[disabled] {
+  opacity: .4; cursor: not-allowed; pointer-events: none;
+  animation: none;
 }
 #gift-box:hover { animation-duration: .7s; }
 #gift-box.opened #gift-lid {

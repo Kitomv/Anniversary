@@ -545,6 +545,55 @@ window.openGift = function(){
   if(rb) rb.classList.add('show');
 };
 
+/* ===== 9b. TAP 10 HATI sebelum buka kado ===== */
+(function(){
+  try{
+    const hearts = document.querySelectorAll('.tap-heart');
+    const prog = document.getElementById('tap-progress');
+    const gb = document.getElementById('gift-box');
+    if(!hearts.length || !gb) return;
+    gb.disabled = true;
+    let n = 0;
+    hearts.forEach(h=>{
+      h.addEventListener('click', ()=>{
+        if(h.classList.contains('tapped')) return;
+        h.classList.add('tapped');
+        n++;
+        if(prog) prog.textContent = n + ' / 10';
+        burstTap(h);
+        if(n === 10){
+          gb.disabled = false;
+          const hint = document.querySelector('.gift-hint');
+          if(hint) hint.textContent = 'Sekarang ketuk kadonya! 🎁';
+        }
+      });
+    });
+    /* Burst kecil di sekitar hati saat tap — 6 partikel, posisi lokal */
+    function burstTap(el){
+      try{
+        const r = el.getBoundingClientRect();
+        const colors = ['#FF9EC4','#FFD6E8','#D64477','#E8365D'];
+        for(let i=0;i<6;i++){
+          const c = document.createElement('div');
+          c.className = 'confetti';
+          c.style.position = 'fixed';
+          c.style.left = (r.left + r.width/2) + 'px';
+          c.style.top  = (r.top + r.height/2) + 'px';
+          c.style.width = c.style.height = '8px';
+          c.style.background = colors[i % colors.length];
+          c.style.transform = `translate(${(Math.random()*60-30).toFixed(0)}px, ${(Math.random()*60-30).toFixed(0)}px) rotate(${Math.random()*360}deg) scale(0)`;
+          c.style.transition = 'transform .45s ease-out, opacity .45s ease-out';
+          document.body.appendChild(c);
+          requestAnimationFrame(()=>{ c.style.transform = c.style.transform + ''; });
+          setTimeout(()=>{ c.style.transform = `translate(${(Math.random()*80-40).toFixed(0)}px, ${(Math.random()*80-40).toFixed(0)}px) rotate(${Math.random()*720}deg) scale(1)`; c.style.opacity = '1'; }, 10);
+          setTimeout(()=>{ c.style.opacity = '0'; }, 300);
+          setTimeout(()=>c.remove(), 750);
+        }
+      }catch(err){}
+    }
+  }catch(err){ console.error('tap-hearts:', err); }
+})();
+
 window.toggleEnvelope = function(idx){
   const envs = document.querySelectorAll('.envelope');
   if(envs[idx]){
