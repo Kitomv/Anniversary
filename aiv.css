@@ -94,6 +94,22 @@ img { max-width: 100%; display: block; }
 .pin-pad .ghost { visibility: hidden; }
 .gate-error { color: var(--red-bow); font-size: .85rem; min-height: 1.2em; font-weight: 600; }
 
+/* Gembok PIN — transisi kunci terbuka */
+.pin-lock { margin: .4rem 0 0; }
+.pin-lock svg { overflow: visible; }
+.lk-glow { fill: none; stroke: transparent; stroke-width: 2; }
+.lk-shackle { transform-origin: 24px 24px; transition: transform .5s cubic-bezier(.34,1.4,.5,1); }
+.lk-body { transition: fill .3s; }
+#pin-lock.unlock .lk-shackle { transform: translateY(-10px) rotate(8deg); }
+#pin-lock.unlock .lk-glow { animation: lockGlow .8s ease-out; }
+#pin-lock.unlock .lk-body { fill: #58C88A; }
+@keyframes lockGlow {
+  0% { stroke: #58C88A; opacity: 0; }
+  40% { opacity: 1; }
+  100% { stroke: transparent; opacity: 0; }
+}
+.gate-message { min-height: 1.6em; font-weight: 700; color: var(--pink-deep); font-size: .95rem; }
+
 .hold-wrap { position: relative; width: 150px; height: 150px; }
 .hold-ring { position: absolute; inset: 0; transform: rotate(-90deg); }
 .hold-ring circle { fill: none; stroke: var(--pink-light); stroke-width: 8; }

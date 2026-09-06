@@ -27,10 +27,17 @@ const CONFIG = {
       if(input.length === 6){
         if(input === CONFIG.pin){
           locked = true;
+          const lock = document.getElementById('pin-lock');
+          const msg = document.getElementById('unlock-msg');
+          if(lock) lock.classList.add('unlock');
+          if(msg) msg.textContent = 'Terbuka! 💖';
           setTimeout(()=>{
             document.getElementById('layer1').classList.add('hidden');
             document.getElementById('layer3').classList.remove('hidden');
-          }, 250);
+            /* reset untuk kunjungan berikutnya */
+            if(lock) lock.classList.remove('unlock');
+            if(msg) msg.textContent = '';
+          }, 700);
         } else {
           locked = true;
           resetTimer = setTimeout(()=>{

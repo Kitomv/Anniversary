@@ -29,6 +29,16 @@
   <div class="pin-dots" id="pin-dots" aria-live="polite">
     <span></span><span></span><span></span><span></span><span></span><span></span>
   </div>
+  <div class="pin-lock" id="pin-lock" aria-hidden="true">
+    <svg viewBox="0 0 48 48" width="44" height="44">
+      <circle class="lk-glow" cx="24" cy="24" r="22"/>
+      <path class="lk-shackle" d="M16 22 V14 a8 8 0 0 1 16 0 V22"
+            fill="none" stroke="#B23A63" stroke-width="5" stroke-linecap="round"/>
+      <rect class="lk-body" x="13" y="21" width="22" height="15" rx="4" fill="#FF9EC4"/>
+      <line class="lk-keyhole" x1="24" y1="26" x2="24" y2="31" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <p class="gate-message" id="unlock-msg"></p>
   <div class="pin-pad" id="pin-pad" aria-label="Pin numerik">
     <button onclick="lkPress('1')">1</button><button onclick="lkPress('2')">2</button><button onclick="lkPress('3')">3</button>
     <button onclick="lkPress('4')">4</button><button onclick="lkPress('5')">5</button><button onclick="lkPress('6')">6</button>
