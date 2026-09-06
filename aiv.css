@@ -612,6 +612,13 @@ section { position: relative; z-index: 2; max-width: 680px; margin: 0 auto; padd
   font-size: 1.3rem; display: grid; place-items: center;
   opacity: .35; filter: grayscale(.4);
   transition: opacity .2s, transform .15s, filter .2s;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+/* Feedback tekan: hati mengecil sesaat saat disentuh */
+.tap-heart:not(.tapped):active {
+  transform: scale(.82);
 }
 .tap-heart.tapped {
   opacity: 1; filter: none;
