@@ -548,7 +548,7 @@ window.openGift = function(){
     giftOpened = true;
     window.launchConfetti();
   }
-  const rb = document.getElementById('surprise-reveal');
+  const rb = document.getElementById('cert-gift-reveal');
   if(rb) rb.classList.add('show');
 };
 

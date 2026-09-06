@@ -657,23 +657,7 @@ section { position: relative; z-index: 2; max-width: 680px; margin: 0 auto; padd
 
 .reveal-box { display: none; margin-top: 1.4rem; }
 .reveal-box.show { display: block; animation: popIn .5s ease; }
-.special-confession {
-  font-family: 'Baloo 2', sans-serif;
-  font-size: clamp(1.15rem, 4.6vw, 1.5rem);
-  font-weight: 800; line-height: 1.65;
-  color: var(--pink-deep);
-  background: linear-gradient(150deg, #FFF0F6, #FFE0EC);
-  border: 2.5px dashed #FF9EC4;
-  border-radius: 20px; padding: 1.2rem 1.4rem;
-}
-.special-sub {
-  font-size: 1.25rem !important;
-  font-weight: 800 !important;
-  color: var(--pink-deep) !important;
-  font-family: 'Baloo 2', sans-serif;
-  margin-top: 1rem;
-}
-.reveal-box small { color: var(--pink-dark); font-weight: 600; }
+.reveal-box .love-certificate { margin-top: .4rem; }
 
 /* AMPLOP RAHASIA */
 .envelope-title { margin-top: 2.4rem; color: var(--pink-deep); font-size: 1.15rem; font-weight: 800; }
@@ -826,7 +810,7 @@ body {
 }
 /* Kecualikan konten teks yang memang dibaca / di-copy */
 #typed-text, .letter-card p, .stats-quote-card p,
-.cert-desc, .special-confession, .love-certificate h3 {
+.cert-desc, .cert-recipient, .love-certificate h3 {
   -webkit-user-select: text; user-select: text;
 }
 img {
