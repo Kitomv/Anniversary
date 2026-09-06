@@ -302,8 +302,8 @@ img { max-width: 100%; display: block; }
   transition: opacity .4s;
 }
 #music-toggle.show { opacity: 1; pointer-events: auto; }
-#music-toggle:not(.off) { animation: musicSpin 4s linear infinite; }
-#music-toggle.off { filter: grayscale(.6); opacity: .75; animation: none; }
+#music-toggle { animation: musicSpin 4s linear infinite; }
+#music-toggle.off { filter: grayscale(.7); opacity: .7; }
 @keyframes musicSpin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
