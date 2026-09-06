@@ -350,7 +350,11 @@ img { max-width: 100%; display: block; }
   padding: .3rem .55rem;
   opacity: .5;
   transition: background .2s, opacity .2s, transform .2s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
+/* Feedback tekan saat disentuh (non-aktif) */
+#page-nav button:not(.on):active { transform: scale(.9); }
 #page-nav button img {
   width: 26px; height: 26px; object-fit: contain;
 }
