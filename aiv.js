@@ -201,12 +201,12 @@ const CONFIG = {
         const set=(id,v)=>{const el=document.getElementById(id); if(el) el.textContent=String(v).padStart(2,'0');};
         set('cd-d',d); set('cd-h',h); set('cd-m',m); set('cd-s',s);
       }
-      if(diff <= 0) return; /* hari-H: tidak perlu loop tiap detik */
       const daysEl = document.getElementById('days-together');
       if(daysEl){
         const days = Math.max(0, Math.floor((now - CONFIG.startDate)/864e5));
         daysEl.textContent = days.toLocaleString('id-ID');
       }
+      if(diff <= 0) return; /* hari-H: tidak perlu loop tiap detik, tapi days sudah di-update */
       setTimeout(tickCd, 1000);
     }
     tickCd();
@@ -394,6 +394,7 @@ Aku sayang kamu, hari ini dan seterusnya 💕
         lbNavTimer = setTimeout(()=>{
           delete lb.dataset.dir;
           lbImg.src = all[i];
+          lbImg.alt = 'Foto ' + (i % all.length + 1) + ' dari ' + all.length;
           lbIndex = (i + all.length) % all.length;
           frame.style.animation = 'none';
           void frame.offsetWidth;
@@ -403,6 +404,7 @@ Aku sayang kamu, hari ini dan seterusnya 💕
         /* Buka pertama kali: lbIn scale */
         lbIndex = (i + all.length) % all.length;
         lbImg.src = all[lbIndex];
+        lbImg.alt = 'Foto ' + (lbIndex + 1) + ' dari ' + all.length;
         frame.style.animation = 'none';
         void frame.offsetWidth;
         frame.style.animation = '';
@@ -652,17 +654,17 @@ function synthStop(){
       bg.appendChild(el);
       setTimeout(()=>el.remove(), 20000);
     }
-    const idPetal = setInterval(spawnPetal, 700);
-    const idHeart = setInterval(spawnHeart, 1800);
+    let idPetal = setInterval(spawnPetal, 700);
+    let idHeart = setInterval(spawnHeart, 1800);
     for(let i=0;i<8;i++){ spawnPetal(); }
     for(let i=0;i<3;i++) spawnHeart();
     document.addEventListener('visibilitychange', ()=>{
       if(document.hidden){
         clearInterval(idPetal); clearInterval(idHeart);
       } else {
-        /* Restart intervals saat tab kembali aktif */
-        setInterval(spawnPetal, 700);
-        setInterval(spawnHeart, 1800);
+        /* Restart intervals saat tab kembali aktif — simpan ID agar bisa dibersihkan lagi */
+        idPetal = setInterval(spawnPetal, 700);
+        idHeart = setInterval(spawnHeart, 1800);
       }
     });
   }catch(err){ console.error('particles:', err); }

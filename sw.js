@@ -27,7 +27,10 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if(e.request.method !== 'GET') return;
   const url = e.request.url;
-  const isShell = SHELL.some(s => url.endsWith(s.replace('./', '')));
+  const rootUrl = self.location.origin + '/';
+  /* Shell: root '/' plus path yang cocok; hindari '' yang match semua request */
+  const isRoot = url === rootUrl || url === rootUrl.replace(/\/$/, '') || url === rootUrl + 'index.html';
+  const isShell = isRoot || SHELL.some(s => s !== './' && url.endsWith(s.replace('./', '')));
   if(isShell){
     e.respondWith(
       fetch(e.request).then(res => {
